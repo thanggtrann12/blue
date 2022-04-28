@@ -16,9 +16,12 @@ def control(self):
     if data != None:
         print(data)
         jsonData = json.loads(str(data).replace("'", '"'))
-        self.Name.setText(jsonData['Name'])
-        self.Pin.setText(jsonData['Pin'])
-        self.Size.setText(jsonData['Size'])
+        if jsonData["Name"] != "":
+            self.Name.setText(jsonData["Name"])
+        if jsonData["Pin"] != "":
+            self.Pin.setText(jsonData["Pin"])
+        if jsonData["Size"] != "":
+            self.Size.setText(jsonData["Size"])
         imageName = jsonData['Name']
         imageLink = "assets/images/"+imageName+".jpg"
         if lastLink != imageLink:
