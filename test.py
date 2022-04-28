@@ -1,10 +1,13 @@
 
 import paho.mqtt.client as mqtt
 import time
+import json
 import threading
+import logging
 from mqtt.functions.teaminfo import *
 from mqtt.config.mqttBrokerInfo import *
-from jsons.jsonParse import jsonParse
+logging.basicConfig(level=logging.INFO)
+
 
 
 clients=[
@@ -19,16 +22,23 @@ def Connect(client,broker,port,keepalive,run_forever=False):
     delay=5
     badcount=0
     while not connflag:
+        logging.info("connecting to broker "+str(broker))
         time.sleep(delay)
         try:
             client.username_pw_set(username, password)
             client.connect(broker,port,keepalive)
             connflag=True
+
         except:
             client.badconnection_flag=True
+            logging.info("connection failed "+str(badcount))
             badcount +=1
             if badcount>=3 and not run_forever: 
                 return -1
+
+
+
+                
     return 0
 def wait_for(client,msgType,period=1,wait_time=10,running_loop=False):
     client.running_loop=running_loop #
@@ -91,12 +101,14 @@ def client_loop(client,broker,port,keepalive=60,loop_function=None,          loo
     
 def on_message(client, userdata, message):
    time.sleep(1)
+   print("message",str(message.payload.decode("utf-8")), "received in topic", message.topic)
    if message.topic == "BlueTeam":
      if client.subscribe(message.payload.decode("utf-8")):
         print("subscribed to ",message.payload.decode("utf-8"))
         client.suback_flag=True
    if message.topic in teamCode:
-      jsonParse(message.payload.decode("utf-8"))
+      
+      print("message ",str(message.payload.decode("utf-8")), "received in topic", message.topic)
 
 def on_connect(client, userdata, flags, rc):
     if rc==0:
@@ -130,14 +142,15 @@ def Create_connections():
       port=clients[i]["port"]
       client.on_connect = on_connect
       client.on_disconnect = on_disconnect
+      #client.on_publish = on_publish
       client.on_message = on_message
       t = threading.Thread(target=client_loop,args=(client,broker,port,60,pub))
       threads.append(t)
       t.start()
 
 
-mqtt.Client.connected_flag=False
-mqtt.Client.bad_connection_flag=False
+mqtt.Client.connected_flag=False #create flag in class
+mqtt.Client.bad_connection_flag=False #create flag in class
 
 threads=[]
 no_threads=threading.active_count()

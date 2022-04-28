@@ -1,14 +1,18 @@
 import json
-data = ""
+data = {
+  "Name":"",
+  "Pin":"",
+  "Size":"",
+}
 
 
-def jsonParse(topic, msgPayload):
+def jsonParse(msgPayload):
     global data
-    if topic == "BlueTeam":
-        if msgPayload != "":
-            jsonData = json.loads(msgPayload)
-            data = jsonData
-            return data
+    msgJson = json.loads(msgPayload)
+    data = msgJson
+    print(data)
+    return data
+
 
 def getData():
     global data
