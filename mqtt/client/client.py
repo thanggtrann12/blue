@@ -4,16 +4,16 @@ import time
 import threading
 from mqtt.functions.teaminfo import *
 from mqtt.config.mqttBrokerInfo import *
-from jsons.jsonParse import jsonParse
+from jsons.jsonParse import *
 
 
 clients=[
-{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient","sub_topic":"BlueTeam"},
-{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient1","sub_topic":"BlueLap1"},
-{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient2","sub_topic":"BlueLap2"},
-{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient3","sub_topic":"BlueLap3"},
-{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient4","sub_topic":"BlueEnd"},
-{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient_response"}
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient","sub_topic":"BlueTeam"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient1","sub_topic":"BlueLap1"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient2","sub_topic":"BlueLap2"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient3","sub_topic":"BlueLap3"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient4","sub_topic":"BlueEnd"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTearesponse","sub_topic":"Status"}
 ]
 blueTeamClient=len(clients)
 
@@ -104,15 +104,29 @@ def on_message(client, userdata, message):
             payload = payload.replace("'", '"')
             jsonParse(payload)
     
-
+    if message.topic == "BlueEnd":
+        print("end : ",message.payload.decode())
+        setlap(4, message.payload.decode())
+    if message.topic == "BlueLap1":
+        print("lap 1 : ",message.payload.decode())
+        setlap(1, message.payload.decode())
+    if message.topic == "BlueLap2":
+        print("lap 2 : ",message.payload.decode())
+        setlap(2, message.payload.decode())
+    if message.topic == "BlueLap3":
+        print("lap 3 : ",message.payload.decode())
+        setlap(3, message.payload.decode())
+    if message.topic == "Status":
+        print("status : ",message.payload.decode())
+        setstatus(message.payload.decode())
 def on_connect(client, userdata, flags, rc):
     if rc==0:
         client.connected_flag=True #set flag
-        for i in range(0,blueTeamClient-1):
+        for i in range(0,blueTeamClient):
             if client == clients[i]["client"]:
-                print("connected OK")
-                client.subscribe(clients[i]["sub_topic"])
                 print("subscribed to ",clients[i]["sub_topic"])
+                client.subscribe(clients[i]["sub_topic"])
+                
         
     else:
         print("Bad connection Returned code=",rc)

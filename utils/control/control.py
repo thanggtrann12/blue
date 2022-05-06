@@ -1,5 +1,5 @@
 import json
-from jsons.jsonParse import getData
+from jsons.jsonParse import *
 from utils.setting.image import IMGShow
 from PyQt5 import QtWidgets
 from utils.control.checkpoint import checkpoint
@@ -27,6 +27,6 @@ def control(self):
         if lastLink != imageLink:
             IMGShow(self, imageLink)
             lastLink = imageLink
+    checkpoint(self)
 
 
-        # checkpoint(self, int(jsonData['CheckPoint']))
