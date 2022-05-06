@@ -9,8 +9,8 @@ def IMGShow(self, image):
     This function is used to show the image"""
 
     self.imageToShow = self.findChild(QtWidgets.QLabel, "imageToShow")
-    width = self.frameGeometry().width()
-    height = self.frameGeometry().height()
+    width = 1000
+    height = 1000
     self.imageToShow.setPixmap(
         QPixmap(image).scaled(width, height, Qt.KeepAspectRatio))
     self.imageToShow.setAlignment(Qt.AlignCenter)

@@ -9,7 +9,10 @@ from jsons.jsonParse import jsonParse
 
 clients=[
 {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient","sub_topic":"BlueTeam"},
-
+{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient1","sub_topic":"BlueLap1"},
+{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient2","sub_topic":"BlueLap2"},
+{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient3","sub_topic":"BlueLap3"},
+{"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient4","sub_topic":"BlueEnd"},
 {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient_response"}
 ]
 blueTeamClient=len(clients)
@@ -90,21 +93,26 @@ def client_loop(client,broker,port,keepalive=60,loop_function=None,          loo
         client.connected_flag=False
     
 def on_message(client, userdata, message):
-   time.sleep(1)
-   if message.topic == "BlueTeam":
-     if client.subscribe(message.payload.decode("utf-8")):
-        print("subscribed to ",message.payload.decode("utf-8"))
-        client.suback_flag=True
-   if message.topic in teamCode:
-      jsonParse(message.payload.decode("utf-8"))
+    time.sleep(0.1)
+    if message.topic == "BlueTeam":
+        if client.subscribe(message.payload.decode("utf-8")):
+            print("subscribed to ",message.payload.decode("utf-8"))
+            client.suback_flag=True
+    for key, val in teamCode.items():
+        if message.topic == key:
+            payload = str(message.payload.decode())
+            payload = payload.replace("'", '"')
+            jsonParse(payload)
+    
 
 def on_connect(client, userdata, flags, rc):
     if rc==0:
         client.connected_flag=True #set flag
-        if client == clients[0]["client"]:
-            print("connected OK")
-            client.subscribe(clients[0]["sub_topic"])
-            print("subscribed to ",clients[0]["sub_topic"])
+        for i in range(0,blueTeamClient-1):
+            if client == clients[i]["client"]:
+                print("connected OK")
+                client.subscribe(clients[i]["sub_topic"])
+                print("subscribed to ",clients[i]["sub_topic"])
         
     else:
         print("Bad connection Returned code=",rc)
@@ -112,7 +120,7 @@ def on_connect(client, userdata, flags, rc):
 def on_disconnect(client, userdata, rc):
    client.connected_flag=False 
 def on_publish(client, userdata, mid):
-   time.sleep(1)
+   time.sleep(0.01)
 
 def pub(client,loop_delay):
     pass
