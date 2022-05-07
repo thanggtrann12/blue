@@ -22,7 +22,9 @@ def control(self):
         if jsonData["Size"] != "":
             self.Size.setText(jsonData["Size"])
         imageName = jsonData['Name']
+        print(imageName)
         imageName = imageName.upper()
+        imageName = imageName.replace("-", "_")
         imageLink = "assets/images/"+imageName.replace(" ","_")+".png"
         if lastLink != imageLink:
             IMGShow(self, imageLink)

@@ -1,4 +1,4 @@
-teamCode = {
+teamList = {
     "03 F4 A9 94": "Bulldogs Hornets", #
     "83 96 24 A7": "Kratos", # 
     "03 0D BF 12": "UNBREAKABLE", #
@@ -29,6 +29,6 @@ teamCode = {
     "53 AF 38 A7": "Phở Bò Tái", #
     "13 C0 74 12": "LetBeBot", #
     "F4 08 D7 2B": "Ravens", #
-    "BD DC D6 2B": "T REX", #
+    "BD DC D6 2B": "T-REX", #
     "D2 97 D7 2B": "Double one" #
 }

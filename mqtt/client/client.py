@@ -8,12 +8,12 @@ from jsons.jsonParse import *
 
 
 clients=[
-    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient","sub_topic":"BlueTeam"},
-    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient1","sub_topic":"BlueLap1"},
-    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient2","sub_topic":"BlueLap2"},
-    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient3","sub_topic":"BlueLap3"},
-    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTeamClient4","sub_topic":"BlueEnd"},
-    {"broker":"driver.cloudmqtt.com","port":18675,"name":"BlueTearesponse","sub_topic":"Status"}
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"blueteamclient","sub_topic":"BlueTeam"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"blueteamclient1","sub_topic":"BlueLap1"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"blueteamclient2","sub_topic":"BlueLap2"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"blueteamclient3","sub_topic":"BlueLap3"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"blueteamclient4","sub_topic":"BlueEnd"},
+    {"broker":"driver.cloudmqtt.com","port":18675,"name":"Bblueteamcliente","sub_topic":"Status"}
 ]
 blueTeamClient=len(clients)
 
@@ -95,9 +95,11 @@ def client_loop(client,broker,port,keepalive=60,loop_function=None,          loo
 def on_message(client, userdata, message):
     time.sleep(0.1)
     if message.topic == "BlueTeam":
-        if client.subscribe(message.payload.decode("utf-8")):
-            print("subscribed to ",message.payload.decode("utf-8"))
-            client.suback_flag=True
+        topic = str(message.payload)
+        print("topic:",topic[2:14])
+        if client.subscribe(topic[2:13]):
+            print("subscribed to ",topic[2:13])
+        client.suback_flag=True
     for key, val in teamCode.items():
         if message.topic == key:
             payload = str(message.payload.decode())
